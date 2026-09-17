@@ -5,11 +5,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Unzip opay folder
+      - name: Unzip files
         run: |
-          unzip -o "opay (2).zip" -d temp
-          rm -rf app/src
-          mv temp/opay*/app/src app/src || mv temp/app/src app/src || cp -r temp/opay*/app/src app/ || true
-          rm -rf temp "opay (2).zip"
-          ls -R app
-      - uses: stefanzweifel/git-auto-commit-action@v5
+          ls -la
+          unzip -o "opay (2).zip" || true
+          for f in *.zip; do [ -e "$f" ] && unzip -o "$f" || true; done
+      - name: Commit files
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git add .
+          git commit -m "Unzipped" || echo "nothing"
+          git push
